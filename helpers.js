@@ -40,7 +40,7 @@ function displayDownloadLink() {
 
 async function downloadPurchaseOrderAttachments(purchaseOrderId) {
     const file = await fetchPurchaseOrderAttachments(purchaseOrderId);
-    saveAs(file);
+    saveAs(file, 'favicon.ico');
 }
 
 async function fetchPurchaseOrderId(activityId) {
@@ -65,9 +65,6 @@ function fetchPurchaseOrderAttachments(purchaseOrderId) {
     // ).blob();
     return fetch(
         `https://cdn.coresystems.net/graphics-files/sap-favicon.ico`,
-        {
-            mode: 'no-cors',
-        }
     )
     .then(response => response.blob())
     .catch(e => console.log('err', e));
