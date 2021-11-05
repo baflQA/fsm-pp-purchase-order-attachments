@@ -56,16 +56,15 @@ async function fetchPurchaseOrderId(activityId) {
 }
 
 async function fetchPurchaseOrderAttachments(purchaseOrderId) {
+    // return await fetch(
+    //     `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
+    //     {
+    //         headers: getHeaders(account, company),
+    //         mode: 'no-cors',
+    //     },
+    // ).blob();
+
     return await fetch(
-        `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
-        {
-            headers: getHeaders(account, company),
-            mode: 'no-cors',
-        },
-    ).blob();
+        `https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-zip-file.zip`
+    ).blob()
 }
-
-async function getPurchaseOrderId(cloudHost, account, company, activityID) {
-    return await fetchPurchaseOrderId(cloudHost, account, company, activityID);
-}
-
