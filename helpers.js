@@ -37,15 +37,29 @@ function displayMessage(message) {
 async function fetchServiceAssignment(cloudHost, account, company, activityId) {
     const response = await fetch(
         `https://${cloudHost}/cloud-partner-dispatch-service/v1/assignment-details?Activity=${activityId}`,
-        {headers: getHeaders(account, company)},
+        {
+            headers: getHeaders(account, company),
+            mode: 'no-cors',
+        },
+    );
+    return await response.json();
+}
+
+async function fetchPurchaseOrderAttachments(cloudHost, account, company, purchaseOrderId) {
+    const response = await fetch(
+        `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
+        {
+            headers: getHeaders(account, company),
+            mode: 'no-cors',
+        },
     );
     return await response.json();
 }
 
 async function getPurchaseOrderAttachments(cloudHost, account, company, activityID) {
     const serviceAssignment = await fetchServiceAssignment(cloudHost, account, company, activityID);
-
     console.log(serviceAssignment);
+// const purchaseOrderAttachments = await fetchPurchaseOrderAttachments(cloudHost, account, company, serviceAssignment.purchaseOrder);
     return 'not implemented yet';
 }
 
