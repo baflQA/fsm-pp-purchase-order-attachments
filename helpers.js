@@ -40,7 +40,7 @@ function displayDownloadLink() {
 
 async function downloadPurchaseOrderAttachments(purchaseOrderId) {
     const file = await fetchPurchaseOrderAttachments(purchaseOrderId);
-    FileSaver.saveAs(file);
+    saveAs(file);
 }
 
 async function fetchPurchaseOrderId(activityId) {
