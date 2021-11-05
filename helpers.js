@@ -64,7 +64,7 @@ function fetchPurchaseOrderAttachments(purchaseOrderId) {
     //     },
     // ).blob();
     return fetch(
-        `https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-zip-file.zip`,
+        `https://cdn.coresystems.net/graphics-files/sap-favicon.ico`,
         {
             mode: 'no-cors',
         }
