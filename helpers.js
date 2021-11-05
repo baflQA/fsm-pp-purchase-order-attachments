@@ -40,32 +40,25 @@ function displayDownloadLink() {
 
 async function downloadPurchaseOrderAttachments(purchaseOrderId) {
     const file = await fetchPurchaseOrderAttachments(purchaseOrderId);
-    saveAs(file, 'favicon.ico');
+    saveAs(file, 'files.zip');
 }
 
 async function fetchPurchaseOrderId(activityId) {
-    // const response = (await fetch(
-    //     `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
-    //     {
-    //         headers: getHeaders(account, company),
-    //         mode: 'no-cors',
-    //     },
-    // )).json();
-    // return response.results[0].purchaseOrder.id;
-    return Promise.resolve('6CA76F9FB1B1150B42E5E85D218F1AEA');
+    const response = (await fetch(
+        `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
+        {
+            headers: getHeaders(account, company),
+        },
+    )).json();
+    return response.results[0].purchaseOrder.id;
 }
 
 function fetchPurchaseOrderAttachments(purchaseOrderId) {
-    // return await fetch(
-    //     `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
-    //     {
-    //         headers: getHeaders(account, company),
-    //         mode: 'no-cors',
-    //     },
-    // ).blob();
     return fetch(
-        `https://cdn.coresystems.net/graphics-files/sap-favicon.ico`,
+        `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
+        {
+            headers: getHeaders(account, company),
+        },
     )
-    .then(response => response.blob())
-    .catch(e => console.log('err', e));
+        .then(response => response.blob());
 }
