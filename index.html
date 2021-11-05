@@ -37,8 +37,8 @@
           const {
             // extract required context from event content
             cloudHost,
-            account,
-            company,
+            accountId,
+            companyId,
             user,
             // extract authentication data from event content
             auth
@@ -51,16 +51,9 @@
           // Add a listener expecting activityID
           shellSdk.onViewState('activityID', async activityID => {
 
-            displayMessage(`Loading for activity ${activityID}...`);
+            let attachments = await getPurchaseOrderAttachments(cloudHost, accountId, companyId, activityID);
 
-            let udfValues = await getUDFs(cloudHost, account, company, activityID);
-
-            if (udfValues.length > 0) {
-              displayMessage('');
-              displayUDFs(udfValues);
-            } else {
-              displayMessage('No udf values');
-            }
+            console.log(attachments);
           });
         });
       }

@@ -1,9 +1,9 @@
 {
-  "name": "Service Call UDF",
+  "name": "Purchase Order Attachments Downloader",
   "provider": "SAP FSM",
-  "description": "Sample extension to demo data fetch using a frontend only architecture",   
+  "description": "Download Purchase Order's Attachments",
   "version": "1.0.0", 
-  "icon": "https://mpienkowski.github.io/fsm-udf-plugin-sample/icon.png",
+  "icon": "https://mpienkowski.github.io/fsm-pp-purchase-order-attachments/icon.png",
   "outletPositions": [
     "PP_ASSIGNMENT_DETAILS_1",
     "PP_ASSIGNMENT_DETAILS_2"
