@@ -55,7 +55,7 @@ async function fetchPurchaseOrderId(activityId) {
     return Promise.resolve('6CA76F9FB1B1150B42E5E85D218F1AEA');
 }
 
-async function fetchPurchaseOrderAttachments(purchaseOrderId) {
+function fetchPurchaseOrderAttachments(purchaseOrderId) {
     // return await fetch(
     //     `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
     //     {
@@ -63,8 +63,12 @@ async function fetchPurchaseOrderAttachments(purchaseOrderId) {
     //         mode: 'no-cors',
     //     },
     // ).blob();
-
-    return await fetch(
-        `https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-zip-file.zip`
-    ).blob()
+    return fetch(
+        `https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-zip-file.zip`,
+        {
+            mode: 'no-cors',
+        }
+    )
+    .then(response => response.blob())
+    .catch(e => console.log('err', e));
 }
