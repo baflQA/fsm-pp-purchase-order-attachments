@@ -31,35 +31,40 @@ function getHeaders(account, company) {
 function displayMessage(message) {
     const messageContainer = document.querySelector('#messageContainer');
     messageContainer.innerText = message;
-
 }
 
-async function fetchServiceAssignment(cloudHost, account, company, activityId) {
-    const response = await fetch(
-        `https://${cloudHost}/cloud-partner-dispatch-service/v1/assignment-details?Activity=${activityId}`,
-        {
-            headers: getHeaders(account, company),
-            mode: 'no-cors',
-        },
-    );
-    return await response.json();
+function displayDownloadLink(message) {
+    const link = document.querySelector('#purchaseOrderLink');
+    link.style.display = 'block';
+}
+
+function downloadPurchaseOrderAttachments(purchaseOrderId) {
+    console.log('download purch order att', purchaseOrderId);
+}
+
+async function fetchPurchaseOrderId(cloudHost, account, company, activityId) {
+    // const response = (await fetch(
+    //     `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
+    //     {
+    //         headers: getHeaders(account, company),
+    //         mode: 'no-cors',
+    //     },
+    // )).json();
+    // return response.results[0].purchaseOrder.id;
+    return Promise.resolve('6CA76F9FB1B1150B42E5E85D218F1AEA');
 }
 
 async function fetchPurchaseOrderAttachments(cloudHost, account, company, purchaseOrderId) {
-    const response = await fetch(
+    return await fetch(
         `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
         {
             headers: getHeaders(account, company),
             mode: 'no-cors',
         },
-    );
-    return await response.json();
+    ).json();
 }
 
-async function getPurchaseOrderAttachments(cloudHost, account, company, activityID) {
-    const serviceAssignment = await fetchServiceAssignment(cloudHost, account, company, activityID);
-    console.log(serviceAssignment);
-// const purchaseOrderAttachments = await fetchPurchaseOrderAttachments(cloudHost, account, company, serviceAssignment.purchaseOrder);
-    return 'not implemented yet';
+async function getPurchaseOrderId(cloudHost, account, company, activityID) {
+    return await fetchPurchaseOrderId(cloudHost, account, company, activityID);
 }
 
