@@ -33,7 +33,7 @@ function displayMessage(message) {
     messageContainer.innerText = message;
 }
 
-function displayDownloadLink(message) {
+function displayDownloadLink() {
     const link = document.querySelector('#purchaseOrderLink');
     link.style.display = 'block';
 }
