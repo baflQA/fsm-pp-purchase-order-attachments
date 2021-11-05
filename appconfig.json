@@ -1,0 +1,11 @@
+{
+  "name": "Service Call UDF",
+  "provider": "SAP FSM",
+  "description": "Sample extension to demo data fetch using a frontend only architecture",   
+  "version": "1.0.0", 
+  "icon": "https://mpienkowski.github.io/fsm-udf-plugin-sample/icon.png",
+  "outletPositions": [
+    "PP_ASSIGNMENT_DETAILS_1",
+    "PP_ASSIGNMENT_DETAILS_2"
+  ]
+}
