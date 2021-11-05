@@ -16,6 +16,7 @@
    style="display: none">Purchase Order Attachments</a>
 <div id="container"></div>
 <script src="https://unpkg.com/fsm-shell"></script>
+<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="helpers.js"></script>
 <script>
     // Import ShellSDK and events list from FSMShell global variable
@@ -51,13 +52,17 @@
                 auth
             } = JSON.parse(event);
 
+            window.cloudHost = cloudHost;
+            window.account = accountId;
+            window.company = company;
+
             // Access_token has a short life span and needs to be refreshed before expiring
             // Each extension needs to implement its own strategy to refresh it.
             initializeRefreshTokenStrategy(shellSdk, auth);
 
             // Add a listener expecting activityID
             shellSdk.onViewState('activityID', async activityID => {
-                window.purchaseOrderId = await fetchPurchaseOrderId(cloudHost, accountId, companyId, activityID);
+                window.purchaseOrderId = await fetchPurchaseOrderId(activityID);
                 displayDownloadLink();
             });
         });

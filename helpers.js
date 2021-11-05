@@ -38,11 +38,12 @@ function displayDownloadLink() {
     link.style.display = 'block';
 }
 
-function downloadPurchaseOrderAttachments(purchaseOrderId) {
-    console.log('download purch order att', purchaseOrderId);
+async function downloadPurchaseOrderAttachments(purchaseOrderId) {
+    const file = await fetchPurchaseOrderAttachments(purchaseOrderId);
+    FileSaver.saveAs(file);
 }
 
-async function fetchPurchaseOrderId(cloudHost, account, company, activityId) {
+async function fetchPurchaseOrderId(activityId) {
     // const response = (await fetch(
     //     `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
     //     {
@@ -54,14 +55,14 @@ async function fetchPurchaseOrderId(cloudHost, account, company, activityId) {
     return Promise.resolve('6CA76F9FB1B1150B42E5E85D218F1AEA');
 }
 
-async function fetchPurchaseOrderAttachments(cloudHost, account, company, purchaseOrderId) {
+async function fetchPurchaseOrderAttachments(purchaseOrderId) {
     return await fetch(
         `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
         {
             headers: getHeaders(account, company),
             mode: 'no-cors',
         },
-    ).json();
+    ).blob();
 }
 
 async function getPurchaseOrderId(cloudHost, account, company, activityID) {
