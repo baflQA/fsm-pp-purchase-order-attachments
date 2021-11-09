@@ -93,7 +93,7 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 
 async function fetchPurchaseOrderId(activityId) {
     const response = (await fetch(
-        `https://${host}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
+        `https://${host}/cloud-partner-dispatch-service/v1/assignment-details?size=1&page=0&id=${activityId}`,
         {
             headers: getHeaders(account, company),
         },
