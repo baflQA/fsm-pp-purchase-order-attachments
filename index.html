@@ -58,10 +58,11 @@
 
             // Access_token has a short life span and needs to be refreshed before expiring
             // Each extension needs to implement its own strategy to refresh it.
-            initializeRefreshTokenStrategy(shellSdk, auth);
+            const tokenPromise = initializeRefreshTokenStrategy(shellSdk, auth);
 
             // Add a listener expecting activityID
             shellSdk.onViewState('activityID', async activityID => {
+                await tokenPromise;
                 window.purchaseOrderId = await fetchPurchaseOrderId(activityID);
                 displayDownloadLink();
             });
