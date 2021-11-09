@@ -1,4 +1,53 @@
+// Import ShellSDK and events list from FSMShell global variable
+// see https://github.com/SAP/fsm-shell for more details.
+const {ShellSdk, SHELL_EVENTS} = FSMShell;
 let token;
+
+// Display an error message if extension does not run within shell
+if (!ShellSdk.isInsideShell()) {
+    displayMessage('Unable to reach shell eventAPI');
+} else {
+    // Initialise ShellSDK to connect with parent shell library
+    const shellSdk = ShellSdk.init(parent, '*');
+
+    // Initialise the extension by requesting the fsm context
+    shellSdk.emit(SHELL_EVENTS.Version1.REQUIRE_CONTEXT, {
+        clientIdentifier: 'service-contract',
+        auth: {
+            response_type: 'token'  // request a user token within the context
+        }
+    });
+    //changed
+
+    // Callback on fsm context response
+    shellSdk.on(SHELL_EVENTS.Version1.REQUIRE_CONTEXT, (event) => {
+
+        const {
+            // extract required context from event content
+            cloudHost,
+            accountId,
+            companyId,
+            user,
+            // extract authentication data from event content
+            auth
+        } = JSON.parse(event);
+
+        window.cloudHost = cloudHost;
+        window.account = accountId;
+        window.company = companyId;
+
+        // Access_token has a short life span and needs to be refreshed before expiring
+        // Each extension needs to implement its own strategy to refresh it.
+        const tokenPromise = initializeRefreshTokenStrategy(shellSdk, auth);
+
+        // Add a listener expecting activityID
+        shellSdk.onViewState('activityID', async activityID => {
+            await tokenPromise;
+            window.purchaseOrderId = await fetchPurchaseOrderId(activityID);
+            displayDownloadLink();
+        });
+    });
+}
 
 function initializeRefreshTokenStrategy(shellSdk, auth) {
     return new Promise((resolve) => {
