@@ -1,7 +1,7 @@
 // Import ShellSDK and events list from FSMShell global variable
 // see https://github.com/SAP/fsm-shell for more details.
 const {ShellSdk, SHELL_EVENTS} = FSMShell;
-let token;
+let token, host, account, company;
 
 // Display an error message if extension does not run within shell
 if (!ShellSdk.isInsideShell()) {
@@ -27,17 +27,16 @@ if (!ShellSdk.isInsideShell()) {
             cloudHost,
             accountId,
             companyId,
-            user,
-            // extract authentication data from event content
             auth
         } = JSON.parse(event);
 
-        window.cloudHost = cloudHost;
-        window.account = accountId;
-        window.company = companyId;
+        host = cloudHost;
+        account = accountId;
+        company = companyId;
 
         // Access_token has a short life span and needs to be refreshed before expiring
         // Each extension needs to implement its own strategy to refresh it.
+        token = auth.access_token;
         const tokenPromise = initializeRefreshTokenStrategy(shellSdk, auth);
 
         // Add a listener expecting activityID
@@ -50,21 +49,18 @@ if (!ShellSdk.isInsideShell()) {
 }
 
 function initializeRefreshTokenStrategy(shellSdk, auth) {
-    return new Promise((resolve) => {
-        shellSdk.on(SHELL_EVENTS.Version1.REQUIRE_AUTHENTICATION, (event) => {
-            token = event.access_token;
-            resolve(token);
-            setTimeout(() => fetchToken(), (event.expires_in * 1000) - 5000);
-        });
-
-        function fetchToken() {
-            shellSdk.emit(SHELL_EVENTS.Version1.REQUIRE_AUTHENTICATION, {
-                response_type: 'token'  // request a user token within the context
-            });
-        }
-
-        setTimeout(() => fetchToken(), (auth.expires_in * 1000) - 5000);
+    shellSdk.on(SHELL_EVENTS.Version1.REQUIRE_AUTHENTICATION, (event) => {
+        token = event.access_token;
+        setTimeout(() => fetchToken(), (event.expires_in * 1000) - 5000);
     });
+
+    function fetchToken() {
+        shellSdk.emit(SHELL_EVENTS.Version1.REQUIRE_AUTHENTICATION, {
+            response_type: 'token'  // request a user token within the context
+        });
+    }
+
+    setTimeout(() => fetchToken(), (auth.expires_in * 1000) - 5000);
 }
 
 
@@ -97,7 +93,7 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 
 async function fetchPurchaseOrderId(activityId) {
     const response = (await fetch(
-        `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
+        `https://${host}/cloud-partner-dispatch-service/v2/assignment-details?size=1&page=0&id=${activityId}`,
         {
             headers: getHeaders(account, company),
         },
@@ -107,7 +103,7 @@ async function fetchPurchaseOrderId(activityId) {
 
 function fetchPurchaseOrderAttachments(purchaseOrderId) {
     return fetch(
-        `https://${cloudHost}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
+        `https://${host}/cloud-partner-dispatch-service/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
         {
             headers: getHeaders(account, company),
         },
