@@ -26,13 +26,13 @@ if (!ShellSdk.isInsideShell()) {
         const {
             // extract required context from event content
             cloudHost,
-            accountId,
-            companyId,
+            account,
+            company,
             auth
         } = JSON.parse(event);
 
         credentials = {
-            host,
+            cloudHost,
             account,
             company,
         }
@@ -53,7 +53,7 @@ if (!ShellSdk.isInsideShell()) {
 
 async function fetchDataObjectById(dtoName, dtoVersion, objectId) {
     const response = await fetch(
-        `https://${credentials.host}/api/data/v4/${dtoName}/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
+        `https://${credentials.cloudHost}/api/data/v4/${dtoName}/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
         {headers: getHeaders()},
     );
     const responseBody = await response.json();
@@ -112,7 +112,7 @@ async function fetchPurchaseOrderId(activityId) {
 function fetchPurchaseOrderAttachments(purchaseOrderId) {
     return fetch(
         //GET https://www.baseUrl.com/data/api/v4/Attachment/{attachmentId}/content
-        `https://${credentials.host}/data/api/v4/Attachment/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
+        `https://${credentials.cloudHost}/data/api/v4/Attachment/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
         {headers: getHeaders()},
     )
     .then(response => response.blob());
