@@ -1,7 +1,8 @@
 // Import ShellSDK and events list from FSMShell global variable
 // see https://github.com/SAP/fsm-shell for more details.
 const {ShellSdk, SHELL_EVENTS} = FSMShell;
-let token, host, account, company;
+let token;
+let credentials;
 
 // Display an error message if extension does not run within shell
 if (!ShellSdk.isInsideShell()) {
@@ -30,9 +31,11 @@ if (!ShellSdk.isInsideShell()) {
             auth
         } = JSON.parse(event);
 
-        host = cloudHost;
-        account = accountId;
-        company = companyId;
+        credentials = {
+            host,
+            account,
+            company,
+        }
 
         // Access_token has a short life span and needs to be refreshed before expiring
         // Each extension needs to implement its own strategy to refresh it.
@@ -94,9 +97,9 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 
 async function fetchPurchaseOrderId(activityId) {
     const response = (await fetch(
-        `https://${host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
+        `https://${credentials.host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
         {
-            headers: getHeaders(account, company),
+            headers: getHeaders(credentials.account, credentials.company),
             credentials: 'include',
         },
     )).json();
@@ -105,9 +108,9 @@ async function fetchPurchaseOrderId(activityId) {
 
 function fetchPurchaseOrderAttachments(purchaseOrderId) {
     return fetch(
-        `https://${host}/cloud-partner-dispatch-service/api/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
+        `https://${credentials.host}/cloud-partner-dispatch-service/api/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
         {
-            headers: getHeaders(account, company),
+            headers: getHeaders(credentials.account, credentials.company),
             credentials: 'include',
         },
     )

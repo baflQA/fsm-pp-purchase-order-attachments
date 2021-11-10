@@ -17,32 +17,6 @@
 <div id="container"></div>
 <script src="https://unpkg.com/fsm-shell"></script>
 <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<script type="text/javascript">
-    var xhr = new XMLHttpRequest();
-    console.assert("withCredentials" in xhr, "This is not XMLHttpRequest2 object, CORS can't be used");
-
-    // xhr.open("GET", "https://et.dev.coresuite.com/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=AF8854A9B8764A8C8AE56BC278A586BA", true);
-
-    xhr.open("GET", "http://localhost:8086/api/v1/assignment-details?size=1&page=0&id=AF8854A9B8764A8C8AE56BC278A586BA", true);
-
-
-    xhr.withCredentials = true;
-
-    xhr.setRequestHeader("Authorization", "bearer 8aa94d8f-a02e-4297-bd58-054efe5578d5");
-    xhr.setRequestHeader("Accept", "*/*");
-    xhr.setRequestHeader("X-Account-Id", "1242983");
-    xhr.setRequestHeader("X-Company-Id", "1306138");
-    xhr.setRequestHeader("Content-Type", "application/json");
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            // Typical action to be performed when the document is ready:
-        }
-        console.log(xhr.responseText)
-    };
-
-    xhr.send(null);
-</script>
 <script src="sources.js"></script>
 </body>
 </html>
