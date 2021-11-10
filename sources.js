@@ -101,7 +101,7 @@ function displayDownloadLink() {
 }
 
 async function downloadPurchaseOrderAttachments(purchaseOrderId) {
-    const file = await fetchPurchaseOrderAttachments(purchaseOrderId);
+    const file = await fetchAttachment('BED9C3962C0A0798AE36D9FE9C476345');
     saveAs(file, 'files.zip');
 }
 
@@ -113,10 +113,9 @@ async function fetchPurchaseOrderId(activityId) {
     return null;
 }
 
-function fetchPurchaseOrderAttachments(purchaseOrderId) {
+function fetchAttachment(attachmentId) {
     return fetch(
-        //GET https://www.baseUrl.com/data/api/v4/Attachment/{attachmentId}/content
-        `https://${credentials.cloudHost}/data/api/v4/Attachment/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
+        `https://${credentials.cloudHost}/data/api/v4/Attachment/${attachmentId}?/content?account=${credentials.account}&company=${credentials.company}`,
         {headers: getHeaders()},
     )
     .then(response => response.blob());
