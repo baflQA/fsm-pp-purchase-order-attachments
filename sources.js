@@ -51,6 +51,15 @@ if (!ShellSdk.isInsideShell()) {
     });
 }
 
+async function fetchDataObjectById(dtoName, dtoVersion, objectId) {
+    const response = await fetch(
+        `https://${credentials.host}/api/data/v4/${dtoName}/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
+        {headers: getHeaders()},
+    );
+    const responseBody = await response.json();
+    return responseBody.data[0][firstCharToLowerCase(dtoName)];
+}
+
 function initializeRefreshTokenStrategy(shellSdk, auth) {
     shellSdk.on(SHELL_EVENTS.Version1.REQUIRE_AUTHENTICATION, (event) => {
         token = event.access_token;
@@ -67,15 +76,12 @@ function initializeRefreshTokenStrategy(shellSdk, auth) {
 }
 
 
-function getHeaders(account, company) {
+function getHeaders() {
     const headers = {
         'Content-Type': 'application/json',
         'X-Client-ID': 'fsm-pp-purchase-order-attachments',
         'X-Client-Version': '1.0.0',
         'Authorization': `bearer ${token}`,
-        'X-Account-ID': account,
-        'X-Company-ID': company,
-        'Accept': '*/*',
     };
     return headers;
 }
@@ -96,23 +102,18 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 }
 
 async function fetchPurchaseOrderId(activityId) {
-    const response = (await fetch(
-        `https://${credentials.host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
-        {
-            headers: getHeaders(credentials.account, credentials.company),
-            credentials: 'include',
-        },
-    )).json();
-    return response.results[0].purchaseOrder.id;
+    const activity = await fetchDataObjectById('Activity', 36, activityId);
+    const purchaseOrder = await fetchDataObjectById('PurchaseOrder', 14, activity.remarks);
+
+    console.log(purchaseOrder)
+    return null;
 }
 
 function fetchPurchaseOrderAttachments(purchaseOrderId) {
     return fetch(
-        `https://${credentials.host}/cloud-partner-dispatch-service/api/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
-        {
-            headers: getHeaders(credentials.account, credentials.company),
-            credentials: 'include',
-        },
+        //GET https://www.baseUrl.com/data/api/v4/Attachment/{attachmentId}/content
+        `https://${credentials.host}/data/api/v4/Attachment/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
+        {headers: getHeaders()},
     )
-        .then(response => response.blob());
+    .then(response => response.blob());
 }
