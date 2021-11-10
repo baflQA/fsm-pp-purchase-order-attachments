@@ -97,6 +97,7 @@ async function fetchPurchaseOrderId(activityId) {
         `https://${host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
         {
             headers: getHeaders(account, company),
+            credentials: 'include',
         },
     )).json();
     return response.results[0].purchaseOrder.id;
@@ -107,6 +108,7 @@ function fetchPurchaseOrderAttachments(purchaseOrderId) {
         `https://${host}/cloud-partner-dispatch-service/api/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
         {
             headers: getHeaders(account, company),
+            credentials: 'include',
         },
     )
         .then(response => response.blob());
