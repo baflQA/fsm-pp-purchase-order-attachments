@@ -72,6 +72,7 @@ function getHeaders(account, company) {
         'Authorization': `bearer ${token}`,
         'X-Account-ID': account,
         'X-Company-ID': company,
+        'Origin': window.location.origin,
     };
     return headers;
 }
