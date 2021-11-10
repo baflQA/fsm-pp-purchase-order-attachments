@@ -112,7 +112,7 @@ async function fetchPurchaseOrderId(activityId) {
 
 function fetchAttachment(attachmentId) {
     return fetch(
-        `https://${credentials.cloudHost}/data/api/v4/Attachment/${attachmentId}/content?account=${credentials.account}&company=${credentials.company}`,
+        `https://${credentials.cloudHost}/api/data/v4/Attachment/${attachmentId}/content?account=${credentials.account}&company=${credentials.company}`,
         {
             headers: getHeaders(),
             credentials: 'include',
