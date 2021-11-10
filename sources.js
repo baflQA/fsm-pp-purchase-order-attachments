@@ -98,7 +98,7 @@ async function fetchPurchaseOrderId(activityId) {
         `https://${host}/api/query/v1/?dtos=Attachment.16`,
         {
             method: 'POST',
-            body: {query: `SELECT po.id, a.id FROM PurchaseOrder po LEFT JOIN Attachment a on a.object = po.id WHERE po.object = '${activityId}'`},
+            body: `SELECT po.id, a.id FROM PurchaseOrder po LEFT JOIN Attachment a on a.object = po.id WHERE po.object = '${activityId}'`,
             headers: getHeaders(account, company),
         },
     )).json();
