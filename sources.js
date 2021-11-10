@@ -116,7 +116,10 @@ async function fetchPurchaseOrderId(activityId) {
 function fetchAttachment(attachmentId) {
     return fetch(
         `https://${credentials.cloudHost}/data/api/v4/Attachment/${attachmentId}?/content?account=${credentials.account}&company=${credentials.company}`,
-        {headers: getHeaders()},
+        {
+            headers: getHeaders(),
+            credentials: 'include',
+        },
     )
     .then(response => response.blob());
 }
