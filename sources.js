@@ -93,25 +93,15 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 }
 
 async function fetchPurchaseOrderId(activityId) {
-    // const response = (await fetch(
-    //     //https://et.dev.coresuite.com/api/query/v1?&account=scribe&company=Ambit%20AG&dtos=BusinessPartner.17;ServiceCall.17
-    //     `https://${host}/api/query/v1/?dtos=Attachment.16`,
-    //     {
-    //         method: 'POST',
-    //         body: {query: `SELECT po.id, a.id FROM PurchaseOrder po LEFT JOIN Attachment a on a.object = po.id WHERE po.object = '${activityId}'`},
-    //         headers: getHeaders(account, company),
-    //     },
-    // )).json();
-
     const response = (await fetch(
+        //https://et.dev.coresuite.com/api/query/v1?&account=scribe&company=Ambit%20AG&dtos=BusinessPartner.17;ServiceCall.17
         `https://${host}/api/query/v1/?dtos=Attachment.16`,
         {
             method: 'POST',
-            body: JSON.stringify({query: `SELECT po.id, a.id FROM PurchaseOrder po LEFT JOIN Attachment a on a.object = po.id WHERE po.object = '${activityId}'`}),
+            body: {query: `SELECT po.id, a.id FROM PurchaseOrder po LEFT JOIN Attachment a on a.object = po.id WHERE po.object = '${activityId}'`},
             headers: getHeaders(account, company),
         },
     )).json();
-
     console.log(response);
     return response.results[0].purchaseOrder.id;
 }
