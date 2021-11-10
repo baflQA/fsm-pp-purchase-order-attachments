@@ -60,6 +60,10 @@ async function fetchDataObjectById(dtoName, dtoVersion, objectId) {
     return responseBody.data[0][firstCharToLowerCase(dtoName)];
 }
 
+function firstCharToLowerCase(str) {
+    return str.charAt(0).toLowerCase() + str.substring(1);
+}
+
 function initializeRefreshTokenStrategy(shellSdk, auth) {
     shellSdk.on(SHELL_EVENTS.Version1.REQUIRE_AUTHENTICATION, (event) => {
         token = event.access_token;
