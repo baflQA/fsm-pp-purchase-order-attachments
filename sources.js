@@ -45,7 +45,7 @@ if (!ShellSdk.isInsideShell()) {
         // Add a listener expecting activityID
         shellSdk.onViewState('activityID', async activityID => {
             await tokenPromise;
-            window.purchaseOrderId = await fetchPurchaseOrderId(activityID);
+            window.attachmentId = await fetchPurchaseOrderId(activityID);
             displayDownloadLink();
         });
     });
@@ -100,17 +100,14 @@ function displayDownloadLink() {
     link.style.display = 'block';
 }
 
-async function downloadPurchaseOrderAttachments(purchaseOrderId) {
-    const file = await fetchAttachment('BED9C3962C0A0798AE36D9FE9C476345');
+async function downloadPurchaseOrderAttachments(attachmentId) {
+    const file = await fetchAttachment(attachmentId);
     saveAs(file, 'files.zip');
 }
 
 async function fetchPurchaseOrderId(activityId) {
     const activity = await fetchDataObjectById('Activity', 36, activityId);
-    const purchaseOrder = await fetchDataObjectById('PurchaseOrder', 14, activity.remarks);
-
-    console.log(purchaseOrder)
-    return null;
+    return activity.remarks;
 }
 
 function fetchAttachment(attachmentId) {
