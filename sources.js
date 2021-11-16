@@ -26,15 +26,15 @@ if (!ShellSdk.isInsideShell()) {
         const {
             // extract required context from event content
             cloudHost,
-            account,
-            company,
+            accountId,
+            companyId,
             auth
         } = JSON.parse(event);
 
         credentials = {
-            cloudHost,
-            account,
-            company,
+            host: cloudHost,
+            account: accountId,
+            company: companyId,
         }
 
         // Access_token has a short life span and needs to be refreshed before expiring
@@ -45,23 +45,10 @@ if (!ShellSdk.isInsideShell()) {
         // Add a listener expecting activityID
         shellSdk.onViewState('activityID', async activityID => {
             await tokenPromise;
-            window.attachmentId = await fetchPurchaseOrderId(activityID);
+            window.purchaseOrderId = await fetchPurchaseOrderId(activityID);
             displayDownloadLink();
         });
     });
-}
-
-async function fetchDataObjectById(dtoName, dtoVersion, objectId) {
-    const response = await fetch(
-        `https://${credentials.cloudHost}/api/data/v4/${dtoName}/${objectId}?dtos=${dtoName}.${dtoVersion}&account=${credentials.account}&company=${credentials.company}`,
-        {headers: getHeaders()},
-    );
-    const responseBody = await response.json();
-    return responseBody.data[0][firstCharToLowerCase(dtoName)];
-}
-
-function firstCharToLowerCase(str) {
-    return str.charAt(0).toLowerCase() + str.substring(1);
 }
 
 function initializeRefreshTokenStrategy(shellSdk, auth) {
@@ -80,12 +67,15 @@ function initializeRefreshTokenStrategy(shellSdk, auth) {
 }
 
 
-function getHeaders() {
+function getHeaders(account, company) {
     const headers = {
         'Content-Type': 'application/json',
         'X-Client-ID': 'fsm-pp-purchase-order-attachments',
         'X-Client-Version': '1.0.0',
         'Authorization': `bearer ${token}`,
+        'X-Account-ID': account,
+        'X-Company-ID': company,
+        'Accept': '*/*',
     };
     return headers;
 }
@@ -100,23 +90,29 @@ function displayDownloadLink() {
     link.style.display = 'block';
 }
 
-async function downloadPurchaseOrderAttachments(attachmentId) {
-    const file = await fetchAttachment(attachmentId);
+async function downloadPurchaseOrderAttachments(purchaseOrderId) {
+    const file = await fetchPurchaseOrderAttachments(purchaseOrderId);
     saveAs(file, 'files.zip');
 }
 
 async function fetchPurchaseOrderId(activityId) {
-    const activity = await fetchDataObjectById('Activity', 36, activityId);
-    return activity.remarks;
+    const response = (await fetch(
+        `https://${credentials.host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
+        {
+            headers: getHeaders(credentials.account, credentials.company),
+            credentials: 'include',
+        },
+    )).json();
+    return response.results[0].purchaseOrder.id;
 }
 
-function fetchAttachment(attachmentId) {
+function fetchPurchaseOrderAttachments(purchaseOrderId) {
     return fetch(
-        `https://${credentials.cloudHost}/api/data/v4/Attachment/${attachmentId}/content?account=${credentials.account}&company=${credentials.company}`,
+        `https://${credentials.host}/cloud-partner-dispatch-service/api/v2/assignment-details/purchase-order/${purchaseOrderId}/attachments`,
         {
-            headers: getHeaders(),
+            headers: getHeaders(credentials.account, credentials.company),
             credentials: 'include',
         },
     )
-    .then(response => response.blob());
+        .then(response => response.blob());
 }
