@@ -96,14 +96,15 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 }
 
 async function fetchPurchaseOrderId(activityId) {
-    const response = (await fetch(
+    return (await fetch(
         `https://${credentials.host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
         {
             headers: getHeaders(credentials.account, credentials.company),
             credentials: 'include',
         },
-    )).json();
-    return response.results[0].purchaseOrder.id;
+    ))
+        .json()
+        .then(response => response.results[0].purchaseOrder.id);
 }
 
 function fetchPurchaseOrderAttachments(purchaseOrderId) {
