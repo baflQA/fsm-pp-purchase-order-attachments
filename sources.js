@@ -97,7 +97,7 @@ async function downloadPurchaseOrderAttachments(purchaseOrderId) {
 
 async function fetchPurchaseOrderId(activityId) {
     return (await fetch(
-        `https://${credentials.host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&id=${activityId}`,
+        `https://${credentials.host}/cloud-partner-dispatch-service/api/v1/assignment-details?size=1&page=0&activity=${activityId}`,
         {
             headers: getHeaders(credentials.account, credentials.company),
             credentials: 'include',
